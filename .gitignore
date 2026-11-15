@@ -6,6 +6,7 @@ __pycache__/
 local.db
 *.db
 .env
+.env.example
 .claude/
 
 _backup/
