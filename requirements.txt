@@ -1,0 +1,9 @@
+﻿fastapi==0.162.7
+uvicorn[standard]==0.54.0
+sqlalchemy==2.1.8
+alembic==1.18.4
+pydantic[email]==2.14.3
+pydantic-settings==2.16.3
+python-multipart==0.0.33
+pyjwt==2.15.1
+psycopg[binary]==3.3.9

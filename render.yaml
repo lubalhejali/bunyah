@@ -1,0 +1,40 @@
+# Render "Blueprint" for a TESTING deployment of the BUNYAH prototype (fictional demo data, simulated payments).
+# Render reads this file when you choose New -> Blueprint. See GUIDE.md before using it.
+# It is NOT a production configuration: production needs paid plans, the D1/D2/D6 approvals and DEMO_MODE=false.
+services:
+  - type: web
+    name: bunyah-testing
+    runtime: python
+    plan: free                      # sleeps after 15 min without visitors; change to a paid plan for always-on
+    buildCommand: pip install -r requirements.txt
+    # Database migrations run automatically when the app starts (app/migrate.py), so no extra step is needed.
+    # --proxy-headers lets the app see each visitor's real address (used by the login protection).
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --proxy-headers --forwarded-allow-ips="*"
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: ENV
+        value: production           # turns on secure cookies and HTTPS-only headers
+      - key: SECRET_KEY
+        generateValue: true         # Render creates a long random secret
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bunyah-testing-db
+          property: connectionString
+      - key: DEMO_MODE
+        value: "true"               # fictional demo accounts + one-click demo logins. Set "false" for real users.
+      - key: STORAGE_BACKEND
+        value: database             # uploaded files are kept in PostgreSQL (Render's free disk is not persistent)
+      - key: CURRENCY
+        value: SAR
+      - key: PUBLIC_BASE_URL        # your site address, e.g. https://bunyah-testing.onrender.com
+        sync: false
+      - key: ADMIN_EMAILS           # optional; the demo admin account already exists in DEMO_MODE
+        sync: false
+
+databases:
+  - name: bunyah-testing-db
+    plan: free                      # free databases expire after 30 days and have no backups (see GUIDE.md)
+    databaseName: bunyah
+    user: bunyah

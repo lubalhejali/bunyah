@@ -1,0 +1,14 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+local.db
+*.db
+.env
+.claude/
+
+_backup/
+uploads/
+coverage.xml
+.coverage
